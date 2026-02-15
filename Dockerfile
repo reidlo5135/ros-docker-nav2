@@ -2,24 +2,41 @@ FROM ros:humble
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get update && apt-get install -y \
-    openssh-server \
-    sudo \
-    git \
-    python3-colcon-common-extensions \
-    python3-rosdep \
+# 1. Update system packages and install required tools including SSH and rosdep
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+        curl \
+        gnupg \
+        lsb-release \
+        ca-certificates \
+        git \
+        openssh-server \
+        python3-colcon-common-extensions \
+        python3-rosdep \
     && rm -rf /var/lib/apt/lists/*
 
+# 2. Create required directory for sshd runtime
 RUN mkdir -p /var/run/sshd
 
-RUN echo 'root:root' | chpasswd
-
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
+# 3. Initialize rosdep
 RUN rosdep init || true && rosdep update
 
+# 4. Create workspace
 WORKDIR /ws
+RUN mkdir -p src
+
+# 5. Clone Navigation2 repository (Humble branch)
+RUN cd src && \
+    git clone -b humble https://github.com/ros-planning/navigation2.git
+
+# 6. Install Navigation2 dependencies using rosdep
+RUN apt-get update && \
+    rosdep install --from-paths src --ignore-src -r -y \
+      --skip-keys="gazebo_ros_pkgs" && \
+    rm -rf /var/lib/apt/lists/*
+
+# 7. Automatically source ROS environment on shell startup
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
 
 EXPOSE 22
 
