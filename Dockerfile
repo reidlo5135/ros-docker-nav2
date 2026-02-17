@@ -13,6 +13,7 @@ RUN apt-get update && apt-get upgrade -y && \
         openssh-server \
         python3-colcon-common-extensions \
         python3-rosdep \
+        ros-humble-ros-gz-* \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Create required directory for sshd runtime
@@ -38,8 +39,7 @@ RUN cd src && \
 
 # 6. Install Navigation2 dependencies using rosdep
 RUN apt-get update && \
-    rosdep install --from-paths src --ignore-src -r -y \
-      --skip-keys="gazebo_ros_pkgs" && \
+    rosdep install --from-paths src --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
 # 7. Automatically source ROS environment on shell startup
