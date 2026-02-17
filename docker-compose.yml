@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  ros:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ros:humble-nav2-base
+    container_name: ros-humble-nav2
+    ports:
+      - "2222:22"
+      - "1883:1883"
+    tty: true
+    stdin_open: true

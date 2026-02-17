@@ -1,1 +1,1 @@
-docker build -t ros:humble-nav2-dev .
+docker build -t ros:humble-nav2-base .

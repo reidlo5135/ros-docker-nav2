@@ -16,7 +16,14 @@ RUN apt-get update && apt-get upgrade -y && \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Create required directory for sshd runtime
+RUN set -e
+RUN grep -nE "^(#?PermitRootLogin|#?PasswordAuthentication)" /etc/ssh/sshd_config || true
+RUN sed -i "s/^#\\?PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+RUN sed -i "s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/" /etc/ssh/sshd_config
 RUN mkdir -p /var/run/sshd
+RUN pkill sshd || true
+RUN /usr/sbin/sshd
+RUN echo 'root:root' | chpasswd
 
 # 3. Initialize rosdep
 RUN rosdep init || true && rosdep update
