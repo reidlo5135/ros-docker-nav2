@@ -27,7 +27,17 @@ RUN /usr/sbin/sshd
 RUN echo 'root:root' | chpasswd
 
 # 3. Initialize rosdep
-RUN rosdep init || true && rosdep update
+RUN set -eux; \
+    if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then \
+      rosdep init; \
+    fi; \
+    ok=0; \
+    for i in 1 2 3; do \
+      if rosdep update --rosdistro "${ROS_DISTRO}"; then ok=1; break; fi; \
+      echo "rosdep update failed (attempt ${i}/3), retrying..." >&2; \
+      sleep 5; \
+    done; \
+    [ "${ok}" -eq 1 ]
 
 # 4. Create workspace
 WORKDIR /ws
@@ -38,8 +48,30 @@ RUN cd src && \
     git clone -b humble https://github.com/ros-planning/navigation2.git
 
 # 6. Install Navigation2 dependencies using rosdep
-RUN apt-get update && \
-    rosdep install --from-paths src --ignore-src -r -y && \
+RUN set -eux; \
+    apt-get update; \
+    skip_keys=""; \
+    if ! apt-cache show ros-humble-gazebo-ros-pkgs >/dev/null 2>&1; then \
+      skip_keys="ros-humble-gazebo-ros-pkgs gazebo_ros_pkgs"; \
+    fi; \
+    ok=0; \
+    for i in 1 2 3; do \
+      if rosdep update --rosdistro "${ROS_DISTRO}"; then ok=1; break; fi; \
+      echo "rosdep update failed (attempt ${i}/3), retrying..." >&2; \
+      sleep 5; \
+    done; \
+    [ "${ok}" -eq 1 ]; \
+    ok=0; \
+    for i in 1 2 3; do \
+      if [ -n "${skip_keys}" ]; then \
+        rosdep install --from-paths src --ignore-src --rosdistro "${ROS_DISTRO}" --skip-keys "${skip_keys}" -r -y; \
+      else \
+        rosdep install --from-paths src --ignore-src --rosdistro "${ROS_DISTRO}" -r -y; \
+      fi && ok=1 && break; \
+      echo "rosdep install failed (attempt ${i}/3), retrying..." >&2; \
+      sleep 5; \
+    done; \
+    [ "${ok}" -eq 1 ]; \
     rm -rf /var/lib/apt/lists/*
 
 # 7. Automatically source ROS environment on shell startup
