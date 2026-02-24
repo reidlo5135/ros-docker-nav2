@@ -1,0 +1,14 @@
+services:
+  nav2-base:
+    build:
+      context: ./ros-humble-nav2-base
+      dockerfile: Dockerfile
+    image: ros-humble-nav2-base:latest
+
+  turtlebot3:
+    build:
+      context: ./ros-humble-turtlebot3
+      dockerfile: Dockerfile
+    image: ros-humble-turtlebot3:latest
+    depends_on:
+      - nav2-base
