@@ -8,6 +8,7 @@ ENV TURTLEBOT3_MODEL=burger
 # 1. Update system packages and install required tools including SSH, rosdep and TurtleBot3 + Gazebo Classic packages
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
+        vim \
         curl \
         gnupg \
         lsb-release \
@@ -17,7 +18,6 @@ RUN apt-get update && apt-get upgrade -y && \
         python3-colcon-common-extensions \
         python3-rosdep \
         x11-apps \
-        ros-humble-ros-gz-* \
         ros-humble-gazebo-ros-pkgs \
         ros-humble-turtlebot3-msgs \
         ros-humble-turtlebot3-description \
@@ -33,7 +33,7 @@ RUN sed -i "s/^#\\?PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
 RUN sed -i "s/^#\\?PasswordAuthentication.*/PasswordAuthentication yes/" /etc/ssh/sshd_config
 RUN mkdir -p /var/run/sshd
 RUN pkill sshd || true
-RUN /usr/sbin/sshd
+# RUN /usr/sbin/sshd
 RUN echo 'root:root' | chpasswd
 
 # 3. Initialize rosdep
@@ -86,7 +86,8 @@ RUN set -eux; \
 
 # 7. Automatically source ROS environment on shell startup
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
-    echo "export TURTLEBOT3_MODEL=${TURTLEBOT3_MODEL}" >> /root/.bashrc
+    echo "export TURTLEBOT3_MODEL=${TURTLEBOT3_MODEL}" >> /root/.bashrc && \
+    echo "alias humble='source /opt/ros/humble/setup.bash && source /ws/install/setup.bash'" >> /root/.bashrc
 
 EXPOSE 22
 
