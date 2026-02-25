@@ -13,10 +13,18 @@ services:
     depends_on:
       - nav2-base
 
-  nav2-turtlebot3:
+  tb3-pc:
     build:
-      context: ./ros-humble-nav2-turtlebot3
+      context: ./ros-humble-tb3-pc
       dockerfile: Dockerfile
-    image: ros-humble-nav2-turtlebot3:latest
+    image: ros-humble-tb3-pc:latest
+    depends_on:
+      - nav2-base
+  
+  tb3-sbc:
+    build:
+      context: ./ros-humble-tb3-sbc
+      dockerfile: Dockerfile
+    image: ros-humble-tb3-sbc:latest
     depends_on:
       - nav2-base

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMAGE_NAME="${IMAGE_NAME:-ros:humble-nav2-turtlebot3}"
-CONTAINER_NAME="${CONTAINER_NAME:-ros-humble-nav2-turtlebot3}"
+IMAGE_NAME="${IMAGE_NAME:-ros-docker-tb3-pc}"
+CONTAINER_NAME="${CONTAINER_NAME:-ros-docker-tb3-pc}"
 TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL:-burger}"
 DISPLAY_VALUE="${DISPLAY:-:0}"
 
@@ -32,13 +32,13 @@ docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
 docker run -it \
   --name "${CONTAINER_NAME}" \
+  --net=host \
+  --ipc=host \
   --privileged \
   --shm-size=4g \
   -e DISPLAY="${DISPLAY_VALUE}" \
   -e QT_X11_NO_MITSHM=1 \
   -e LIBGL_ALWAYS_INDIRECT=0 \
   -e TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL}" \
-  -p 2222:22 \
-  -p 1883:1883 \
   "${DOCKER_ARGS[@]}" \
   "${IMAGE_NAME}"

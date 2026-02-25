@@ -5,12 +5,14 @@ SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TURTLEBOT3_MODEL=burger
 
+# PC image: Nav2 (source build) + TurtleBot3 simulation/navigation wrapper packages
 # 1. Update system packages and install required tools including SSH, rosdep and TurtleBot3 + Gazebo Classic packages
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
         vim \
         curl \
         gnupg \
+        build-essential \
         lsb-release \
         ca-certificates \
         git \
@@ -21,7 +23,6 @@ RUN apt-get update && apt-get upgrade -y && \
         ros-humble-gazebo-ros-pkgs \
         ros-humble-turtlebot3-msgs \
         ros-humble-turtlebot3-description \
-        ros-humble-turtlebot3-bringup \
         ros-humble-turtlebot3-navigation2 \
         ros-humble-turtlebot3-simulations \
     && rm -rf /var/lib/apt/lists/*
@@ -87,7 +88,7 @@ RUN set -eux; \
 # 7. Automatically source ROS environment on shell startup
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc && \
     echo "export TURTLEBOT3_MODEL=${TURTLEBOT3_MODEL}" >> /root/.bashrc && \
-    echo "alias humble='source /opt/ros/humble/setup.bash && source /ws/install/setup.bash'" >> /root/.bashrc
+    echo "alias humble='source /opt/ros/humble/setup.bash && [ -f /ws/install/setup.bash ] && source /ws/install/setup.bash || true'" >> /root/.bashrc
 
 EXPOSE 22
 
