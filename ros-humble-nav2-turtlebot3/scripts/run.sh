@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-IMAGE_NAME="${IMAGE_NAME:-ros:humble-turtlebot3}"
-CONTAINER_NAME="${CONTAINER_NAME:-ros-humble-turtlebot3}"
+IMAGE_NAME="${IMAGE_NAME:-ros:humble-nav2-turtlebot3}"
+CONTAINER_NAME="${CONTAINER_NAME:-ros-humble-nav2-turtlebot3}"
 TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL:-burger}"
 DISPLAY_VALUE="${DISPLAY:-:0}"
 

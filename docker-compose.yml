@@ -5,10 +5,18 @@ services:
       dockerfile: Dockerfile
     image: ros-humble-nav2-base:latest
 
-  turtlebot3:
+  nav2-gazebo:
     build:
-      context: ./ros-humble-turtlebot3
+      context: ./ros-humble-nav2-gazebo
       dockerfile: Dockerfile
-    image: ros-humble-turtlebot3:latest
+    image: ros-humble-nav2-gazebo:latest
+    depends_on:
+      - nav2-base
+
+  nav2-turtlebot3:
+    build:
+      context: ./ros-humble-nav2-turtlebot3
+      dockerfile: Dockerfile
+    image: ros-humble-nav2-turtlebot3:latest
     depends_on:
       - nav2-base
