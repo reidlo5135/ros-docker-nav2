@@ -111,15 +111,38 @@ ros2 node list | grep slam
 ros2 topic list | grep '^/map$'
 ```
 
+## [Operation]
+
 ### [Remote PC]
+Default Setup:
 ```bash
 export ROS_DOMAIN_ID=30
+echo $ROS_DOMAIN_ID
+
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ros2 daemon stop
+pkill -f ros2 || true
+ros2 daemon start
+echo $RMW_IMPLEMENTATION
+```
+
+On Gazebo Virtual Simulation:
+```bash
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+```
+
+Launch Nav2 Rviz2:
+```bash
 ros2 launch nav2_bringup rviz_launch.py use_sim_time:=True
 ```
 
-### [SBC]
+Run Teleop Keyboard:
+```bash
+ros2 run turtlebot3_teleop teleop_keyboard
+```
+
+### [SBC(or Docker Instead)]
+Default SetUp
 ```bash
 apt update -y
 apt install -y ros-humble-rmw-cyclonedds-cpp
@@ -127,12 +150,21 @@ export ROS_DOMAIN_ID=30
 echo $ROS_DOMAIN_ID
 
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
 ros2 daemon stop
 pkill -f ros2 || true
 ros2 daemon start
-
 echo $RMW_IMPLEMENTATION
+```
 
+On Gazebo Virtual Simulation:
+- Launch First turtlebot_gazebo.turtlebot3_world on Remote PC
+
+On Real Turtlebot3:
+```bash
+ros2 launch turtlebot3_bringup robot.launch.py
+```
+
+Launch Navigation2:
+```bash
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True slam:=True
 ```
