@@ -22,7 +22,6 @@ docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
 docker run -it \
   --name "${CONTAINER_NAME}" \
-  --net=host \
   --ipc=host \
   --privileged \
   -e TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL}" \

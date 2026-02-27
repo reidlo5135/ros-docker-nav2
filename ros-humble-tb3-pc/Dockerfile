@@ -12,6 +12,7 @@ RUN apt-get update && apt-get upgrade -y && \
         vim \
         curl \
         gnupg \
+        net-tools \
         build-essential \
         lsb-release \
         ca-certificates \

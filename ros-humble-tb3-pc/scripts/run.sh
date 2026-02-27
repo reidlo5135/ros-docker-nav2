@@ -32,13 +32,10 @@ docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
 docker run -it \
   --name "${CONTAINER_NAME}" \
-  --net=host \
   --ipc=host \
   --privileged \
-  --shm-size=4g \
-  -e DISPLAY="${DISPLAY_VALUE}" \
-  -e QT_X11_NO_MITSHM=1 \
-  -e LIBGL_ALWAYS_INDIRECT=0 \
+  --shm-size=8g \
+  -p 2222:22 \
   -e TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL}" \
   "${DOCKER_ARGS[@]}" \
   "${IMAGE_NAME}"

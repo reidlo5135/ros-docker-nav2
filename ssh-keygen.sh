@@ -1,2 +1,6 @@
+ssh-keygen -R "[127.0.0.1]:22"
+ssh-keygen -R "[localhost]:22"
 ssh-keygen -R "[127.0.0.1]:2222"
 ssh-keygen -R "[localhost]:2222"
+ssh-keygen -R "[127.0.0.1]:2223"
+ssh-keygen -R "[localhost]:2223"
